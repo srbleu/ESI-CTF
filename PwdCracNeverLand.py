@@ -1,3 +1,6 @@
+#Codigo escrito para resolver el desafio password_crack del NeverLAN CTF 2020 
+#Escrito por srbleu en el acto
+
 import hashlib
 
 colores =["blue","red","pink","rose","brown","black","white","grey","yellow","purple","violet","orange","silver","gold","magenta","tan","cyan","olive","maroon","navy","aquamarine","turquoise","lime","teal","indigo","gray"]
