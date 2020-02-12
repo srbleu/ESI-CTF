@@ -1,3 +1,6 @@
+#Codigo para resolver el challenge Robot Talk de NeverLAN CTF 2020 
+#Escrito por srbleu en el acto 
+
 import base64 
 from netcat import Netcat
 
