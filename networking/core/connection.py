@@ -58,20 +58,20 @@ class Einstein(ManagingConnections):
             while True:
                 # Waiting for client data
                 data = self.conn.recv(1024)
-                logging.debug("Chall %s - Received %s from %s", data, self.addr)
+                logging.debug("Chall %s - Received %s from %s", self.chall, data, self.addr)
 
                 diff = (current_ts - init_ts)
                 if diff <= timedelta(seconds=self.CHALL_TIMEOUT):
                     if data.decode() == self.TO_FLAG:
                         self.conn.sendall("Enhorabuena! Aqui tienes tu flag: flag{flagtastico}\n".encode())
-                        logging.debug("Chall %s - Ending connection %s from %s", data, self.addr)
+                        logging.debug("Chall %s - Ending connection %s from %s", self.chall, data, self.addr)
                         break
                     else:
                         self.conn.sendall("Ohh! Has fallado! Corre e intentalo de nuevo\n".encode())
                 else:
                     too_slow = "Demasiado lento! Has tardado en responder {0} s".format(diff.seconds).encode()
                     self.conn.sendall(too_slow)
-                    logging.debug("Chall %s - Ending connection %s from %s", data, self.addr)
+                    logging.debug("Chall %s - Ending connection %s from %s", self.chall, data, self.addr)
                     break
 
                 # updating ts
