@@ -13,11 +13,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     received = sock.recv(1024)
     print("Received: {0}".format(received))
 
-    while True:
-        # Send something
-        data = input("What do you want to send?:")
-        sock.sendall(data.encode())
-        # waiting for the server response
-        received = sock.recv(1024)
-        print("Received: {0}".format(received))
-
+    # while True:
+    # Send something
+    data = input("What do you want to send?:")
+    sock.sendall(data.encode())
+    # waiting for the server response
+    received = sock.recv(1024)
+    print("Received: {0}".format(received))

@@ -8,10 +8,11 @@ import time
 
 class ManagingConnections(threading.Thread, object):
 
-    def __init__(self, connection, address):
+    def __init__(self, connection, address, ts_init_conn):
         threading.Thread.__init__(self)
         self.conn = connection
         self.addr = address
+        self.init_ts = ts_init_conn
 
     def run(self):
         # to be overriden
@@ -43,7 +44,7 @@ class Einstein(ManagingConnections):
 
     EINSTEIN_HINT = "Una persona que nunca ha cometido un error"
     TO_FLAG = "nunca intenta nada nuevo"
-    CHALL_TIMEOUT = 10  # in seconds
+    CHALL_TIMEOUT = 5  # in seconds
 
     def run(self):
 
@@ -52,26 +53,28 @@ class Einstein(ManagingConnections):
             hint_msg = "Completa la frase: {0} ".format(self.EINSTEIN_HINT).encode()
             self.conn.sendall(hint_msg)
 
-            # Current timestamp
-            init_ts = current_ts = datetime.now()
-
             while True:
                 # Waiting for client data
                 data = self.conn.recv(1024)
                 logging.debug("Chall %s - Received %s from %s", self.chall, data, self.addr)
 
-                diff = (current_ts - init_ts)
+                # Current timestamp
+                current_ts = datetime.now()
+
+                diff = (current_ts - self.init_ts)
                 if diff <= timedelta(seconds=self.CHALL_TIMEOUT):
                     if data.decode() == self.TO_FLAG:
                         self.conn.sendall("Enhorabuena! Aqui tienes tu flag: flag{flagtastico}\n".encode())
                         logging.debug("Chall %s - Ending connection %s from %s", self.chall, data, self.addr)
                         break
+
                     else:
                         self.conn.sendall("Ohh! Has fallado! Corre e intentalo de nuevo\n".encode())
                 else:
                     too_slow = "Demasiado lento! Has tardado en responder {0} s".format(diff.seconds).encode()
                     self.conn.sendall(too_slow)
-                    logging.debug("Chall %s - Ending connection %s from %s", self.chall, data, self.addr)
+                    logging.debug("Chall %s - Ending connection from %s", self.chall, self.addr)
+                    self.conn.close()
                     break
 
                 # updating ts
